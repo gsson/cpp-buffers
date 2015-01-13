@@ -1,5 +1,3 @@
-#include <iostream>
-#include <functional>
 #include "buffer.hpp"
 #include "chunk_assembler.hpp"
 
@@ -11,21 +9,20 @@ enum frame_state {
     HEAD, PAYLOAD
 };
 
-typedef chunk_assembler<le_buffer, enum frame_state, INITIAL, 8> test_chunk_assembler;
-
 void
 test_assembler() {
-    test_chunk_assembler a;
+    chunk_assembler<le_buffer, enum frame_state, INITIAL, 8> a;
 
     uint32_t n = 0;
-    auto parser = [&] (enum frame_state id, const le_buffer &b, test_chunk_assembler::chunk_info &next) {
+    auto parser = [&] (auto id, auto b, auto next) {
+        le_buffer::cursor cursor = b.begin();
         switch(id) {
             case HEAD:
-                next.length = b.begin().get<uint32_t>();
+                next.length = cursor.get<uint32_t>();
                 next.id = PAYLOAD;
                 break;
             case PAYLOAD:
-                n += b.begin().get<uint32_t>();
+                n += cursor.get<uint32_t>();
                 /* FALLTHROUGH */
             case INITIAL:
                 next.length = 4;
