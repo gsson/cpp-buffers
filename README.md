@@ -10,8 +10,8 @@ Should add some real unit testing framework and remove all the redundant keyword
 Building
 ========
 
-mkdir build
-cd build
-cmake ..
-make
+    mkdir build
+    cd build
+    cmake ..
+    make
 
